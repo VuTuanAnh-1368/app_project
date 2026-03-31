@@ -1,7 +1,6 @@
 #include "protocol.h"
 
-static void trim_trailing_whitespace(char *s)
-{
+static void trim_trailing_whitespace(char *s) {
     size_t len;
 
     if (s == NULL) {
@@ -15,16 +14,14 @@ static void trim_trailing_whitespace(char *s)
     }
 }
 
-static void skip_leading_spaces(const char **p)
-{
+static void skip_leading_spaces(const char **p) {
     while (p != NULL && *p != NULL && **p != '\0' &&
            isspace((unsigned char)**p)) {
         (*p)++;
     }
 }
 
-const char *broker_status_to_string(BrokerStatus status)
-{
+const char *broker_status_to_string(BrokerStatus status) {
     switch (status) {
     case BR_OK:
         return "ok";
@@ -49,8 +46,7 @@ const char *broker_status_to_string(BrokerStatus status)
     }
 }
 
-const char *command_type_to_string(CommandType type)
-{
+const char *command_type_to_string(CommandType type) {
     switch (type) {
     case CMD_CONNECT:
         return "CONNECT";
@@ -72,8 +68,7 @@ const char *command_type_to_string(CommandType type)
     }
 }
 
-int is_valid_client_id(const char *client_id)
-{
+int is_valid_client_id(const char *client_id) {
     size_t i;
     size_t len;
 
@@ -96,8 +91,7 @@ int is_valid_client_id(const char *client_id)
     return 1;
 }
 
-int is_valid_topic(const char *topic)
-{
+int is_valid_topic(const char *topic) {
     size_t i;
     size_t len;
 
@@ -120,8 +114,7 @@ int is_valid_topic(const char *topic)
     return 1;
 }
 
-int build_ok_response(char *buf, size_t size, const char *fmt, ...)
-{
+int build_ok_response(char *buf, size_t size, const char *fmt, ...) {
     va_list ap;
     int prefix_len;
     int body_len;
@@ -153,8 +146,7 @@ int build_ok_response(char *buf, size_t size, const char *fmt, ...)
     return prefix_len + body_len + 1;
 }
 
-int build_err_response(char *buf, size_t size, BrokerStatus status)
-{
+int build_err_response(char *buf, size_t size, BrokerStatus status) {
     int written;
 
     if (buf == NULL || size == 0) {
@@ -184,8 +176,7 @@ int build_msg_response(char *buf, size_t size, const char *topic, const char *pu
     return written;
 }
 
-int build_dm_response(char *buf, size_t size, const char *sender, const char *payload)
-{
+int build_dm_response(char *buf, size_t size, const char *sender, const char *payload) {
     int written;
 
     if (buf == NULL || sender == NULL || payload == NULL) {

@@ -11,7 +11,7 @@ int main(void)
     broker_init(&broker);
 
     a = client_create(1, NULL);
-    b = client_create(2, NULL);
+    b = client_create(2, NULL); 
 
     broker_add_raw_client(&broker, a);
     broker_add_raw_client(&broker, b);

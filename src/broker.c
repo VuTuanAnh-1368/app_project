@@ -2,8 +2,7 @@
 #include "log.h"
 #include "net.h"
 
-void broker_init(Broker *broker)
-{
+void broker_init(Broker *broker) {
     if (broker == NULL) {
         return;
     }
@@ -13,8 +12,7 @@ void broker_init(Broker *broker)
     pthread_mutex_init(&broker->lock, NULL);
 }
 
-void broker_destroy(Broker *broker)
-{
+void broker_destroy(Broker *broker) {
 
     if (broker == NULL) {
         return;
@@ -46,8 +44,7 @@ void broker_destroy(Broker *broker)
     pthread_mutex_destroy(&broker->lock);
 }
 
-void broker_add_raw_client(Broker *broker, Client *client)
-{
+void broker_add_raw_client(Broker *broker, Client *client) {
     if (broker == NULL || client == NULL) {
         return;
     }
@@ -57,8 +54,7 @@ void broker_add_raw_client(Broker *broker, Client *client)
     pthread_mutex_unlock(&broker->lock);
 }
 
-void broker_remove_client(Broker *broker, Client *client)
-{
+void broker_remove_client(Broker *broker, Client *client) {
     if (broker == NULL || client == NULL) {
         return;
     }
@@ -72,8 +68,7 @@ void broker_remove_client(Broker *broker, Client *client)
     pthread_mutex_unlock(&broker->lock);
 }
 
-BrokerStatus broker_register_client(Broker *broker, Client *client, const char *client_id)
-{
+BrokerStatus broker_register_client(Broker *broker, Client *client, const char *client_id) {
     Client *found;
 
     if (broker == NULL || client == NULL || client_id == NULL) {
@@ -100,8 +95,7 @@ BrokerStatus broker_register_client(Broker *broker, Client *client, const char *
     return BR_OK;
 }
 
-BrokerStatus broker_subscribe(Broker *broker, Client *client, const char *topic)
-{
+BrokerStatus broker_subscribe(Broker *broker, Client *client, const char *topic) {
     TopicEntry *entry;
 
     if (broker == NULL || client == NULL || topic == NULL) {
@@ -133,8 +127,7 @@ BrokerStatus broker_subscribe(Broker *broker, Client *client, const char *topic)
     return BR_OK;
 }
 
-BrokerStatus broker_unsubscribe(Broker *broker, Client *client, const char *topic)
-{
+BrokerStatus broker_unsubscribe(Broker *broker, Client *client, const char *topic) {
     TopicEntry *entry;
 
     if (broker == NULL || client == NULL || topic == NULL) {
@@ -161,8 +154,7 @@ BrokerStatus broker_unsubscribe(Broker *broker, Client *client, const char *topi
     return BR_OK;
 }
 
-BrokerStatus broker_publish(Broker *broker, Client *client, const char *topic, const char *payload)
-{
+BrokerStatus broker_publish(Broker *broker, Client *client, const char *topic, const char *payload) {
     TopicEntry *entry;
     SubscriberNode *sub_cur;
     Client *targets[128];
@@ -214,8 +206,7 @@ BrokerStatus broker_publish(Broker *broker, Client *client, const char *topic, c
     return BR_OK;
 }
 
-BrokerStatus broker_send_direct(Broker *broker, Client *client, const char *target_id, const char *payload)
-{
+BrokerStatus broker_send_direct(Broker *broker, Client *client, const char *target_id, const char *payload) {
     Client *target;
     char msgbuf[MAX_LINE_LEN];
 

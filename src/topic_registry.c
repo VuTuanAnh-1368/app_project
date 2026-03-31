@@ -1,7 +1,6 @@
 #include "topic_registry.h"
 
-static SubscriberNode *create_subscriber(Client *client)
-{
+static SubscriberNode *create_subscriber(Client *client) {
     SubscriberNode *node;
 
     node = (SubscriberNode *)malloc(sizeof(SubscriberNode));
@@ -15,8 +14,7 @@ static SubscriberNode *create_subscriber(Client *client)
     return node;
 }
 
-TopicEntry *topic_find(TopicEntry *head, const char *topic)
-{
+TopicEntry *topic_find(TopicEntry *head, const char *topic) {
     TopicEntry *cur;
 
     cur = head;
@@ -30,8 +28,7 @@ TopicEntry *topic_find(TopicEntry *head, const char *topic)
     return NULL;
 }
 
-TopicEntry *topic_find_or_create(TopicEntry **head, const char *topic)
-{
+TopicEntry *topic_find_or_create(TopicEntry **head, const char *topic) {
     TopicEntry *entry;
 
     entry = topic_find(*head, topic);
@@ -55,8 +52,7 @@ TopicEntry *topic_find_or_create(TopicEntry **head, const char *topic)
     return entry;
 }
 
-int topic_has_subscriber(TopicEntry *entry, Client *client)
-{
+int topic_has_subscriber(TopicEntry *entry, Client *client) {
     SubscriberNode *cur;
 
     if (entry == NULL || client == NULL) {
@@ -74,8 +70,7 @@ int topic_has_subscriber(TopicEntry *entry, Client *client)
     return 0;
 }
 
-int topic_add_subscriber(TopicEntry *entry, Client *client)
-{
+int topic_add_subscriber(TopicEntry *entry, Client *client) {
     SubscriberNode *node;
 
     if (entry == NULL || client == NULL) {
@@ -97,8 +92,7 @@ int topic_add_subscriber(TopicEntry *entry, Client *client)
     return 0;
 }
 
-int topic_remove_subscriber(TopicEntry *entry, Client *client)
-{
+int topic_remove_subscriber(TopicEntry *entry, Client *client) {
     SubscriberNode *cur;
     SubscriberNode *prev = NULL;
 
@@ -127,8 +121,7 @@ int topic_remove_subscriber(TopicEntry *entry, Client *client)
     return -1;
 }
 
-void topic_remove_client_from_all(TopicEntry *head, Client *client)
-{
+void topic_remove_client_from_all(TopicEntry *head, Client *client) {
     TopicEntry *cur;
 
     cur = head;
@@ -138,8 +131,7 @@ void topic_remove_client_from_all(TopicEntry *head, Client *client)
     }
 }
 
-void topic_cleanup_empty(TopicEntry **head)
-{
+void topic_cleanup_empty(TopicEntry **head) {
     TopicEntry *cur;
     TopicEntry *prev = NULL;
 

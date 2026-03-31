@@ -1,7 +1,6 @@
 #include "client_registry.h"
 
-Client *client_create(int fd, const struct sockaddr_in *addr)
-{
+Client *client_create(int fd, const struct sockaddr_in *addr) {
     Client *client;
 
     client = (Client *)malloc(sizeof(Client));
@@ -23,8 +22,7 @@ Client *client_create(int fd, const struct sockaddr_in *addr)
     return client;
 }
 
-void client_destroy(Client *client)
-{
+void client_destroy(Client *client) {
     if (client == NULL) {
         return;
     }
@@ -32,8 +30,7 @@ void client_destroy(Client *client)
     free(client);
 }
 
-void client_list_add(Client **head, Client *client)
-{
+void client_list_add(Client **head, Client *client) {
     if (head == NULL || client == NULL) {
         return;
     }
@@ -42,8 +39,7 @@ void client_list_add(Client **head, Client *client)
     *head = client;
 }
 
-void client_list_remove(Client **head, Client *client)
-{
+void client_list_remove(Client **head, Client *client) {
     Client *prev = NULL;
     Client *cur;
 
@@ -69,8 +65,7 @@ void client_list_remove(Client **head, Client *client)
     }
 }
 
-Client *client_find_by_id(Client *head, const char *client_id)
-{
+Client *client_find_by_id(Client *head, const char *client_id) {
     Client *cur;
 
     if (client_id == NULL) {
@@ -88,8 +83,7 @@ Client *client_find_by_id(Client *head, const char *client_id)
     return NULL;
 }
 
-Client *client_find_by_fd(Client *head, int fd)
-{
+Client *client_find_by_fd(Client *head, int fd) {
     Client *cur;
 
     cur = head;

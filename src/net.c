@@ -1,7 +1,6 @@
 #include "net.h"
 
-ssize_t recv_line(int fd, char *buf, size_t maxlen)
-{
+ssize_t recv_line(int fd, char *buf, size_t maxlen) {
     size_t n = 0;
     char c;
     ssize_t rc;
@@ -42,8 +41,7 @@ ssize_t recv_line(int fd, char *buf, size_t maxlen)
     return (ssize_t)n;
 }
 
-int send_all(int fd, const char *buf, size_t len)
-{
+int send_all(int fd, const char *buf, size_t len) {
     size_t total = 0;
     ssize_t n;
 
