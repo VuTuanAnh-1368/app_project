@@ -20,7 +20,7 @@ void client_list_add(Client **head, Client *client);
 void client_list_remove(Client **head, Client *client);
 
 Client *client_find_by_id(Client *head, const char *client_id);
-Client *client_fine_by_fd(Client *head, int fd);
+Client *client_find_by_fd(Client *head, int fd);
 
 
 #endif
