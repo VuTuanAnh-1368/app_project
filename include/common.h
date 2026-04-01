@@ -17,6 +17,7 @@
 
 #define SERVER_IP "127.0.0.1"
 #define SERVER_PORT 8000
+#define BACKLOG 10
 
 #define MAX_LINE_LEN 1024
 #define MAX_CLIENT_ID_LEN 32

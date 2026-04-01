@@ -183,7 +183,7 @@ int build_dm_response(char *buf, size_t size, const char *sender, const char *pa
         return -1;
     }
 
-    written = snprintf(buf, size, "DM %s %s\n", sender, payload);
+    written = snprintf(buf, size, "FR %s %s\n", sender, payload);
     if (written < 0 || (size_t)written >= size) {
         return -1;
     }
