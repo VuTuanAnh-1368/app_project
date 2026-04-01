@@ -4,6 +4,7 @@ LDFLAGS     := -lpthread
 
 # Directories
 BIN_DIR     := bin
+BUILD_DIR   := build
 
 # Source files
 SERVER_SRCS := $(wildcard src/*.c)
