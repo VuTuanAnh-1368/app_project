@@ -24,6 +24,7 @@
 void *client_thread_main(void *arg);
 int create_listen_socket(int port);
 void handle_sigint(int sig);
+void close_all_client_fds(Broker *broker);
 
 static volatile int g_running = 1;
 
@@ -427,6 +428,7 @@ int main() {
 
 
     printf("Server...shuttdown!\n ");
+    close_all_client_fds(&broker);
     close(listen_fd);
     broker_destroy(&broker);
     return 0;
@@ -436,6 +438,28 @@ int main() {
 void handle_sigint(int sig) {
     (void)sig;
     g_running = 0;
+}
+
+void close_all_client_fds(Broker *broker) {
+    Client *client;
+
+    if (broker == NULL) {
+        return;
+    }
+
+    pthread_mutex_lock(&broker->lock);
+
+    client = broker->clients;
+    while (client != NULL) {
+        if (client->fd >= 0) {
+            printf("Close client_fd \n");
+            close(client->fd);
+            client->fd = -1;
+        }
+        client = client->next;
+    }
+
+    pthread_mutex_unlock(&broker->lock);
 }
 
 
