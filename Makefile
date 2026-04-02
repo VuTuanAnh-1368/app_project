@@ -22,6 +22,20 @@ CLIENT_DEPS := $(CLIENT_OBJS:.o=.d)
 SERVER_BIN  := $(BIN_DIR)/server_test
 CLIENT_BIN  := $(BIN_DIR)/client_test
 
+
+# Mode (MULTI/EPOLL/ POLL)
+MODE ?= MULTI
+
+ifeq ($(MODE),MULTI)
+MODE_FLAGS = -DMULTI
+else ifeq ($(MODE),EPOLL)
+MODE_FLAGS = -DEPOLL
+else ifeq ($(MODE),POLL)
+MODE_FLAGS = -DPOLL
+else
+$(error MODE must be MULTI, EPOLL, or POLL)
+endif
+
 all: server client
 
 server: $(SERVER_BIN)
@@ -37,7 +51,7 @@ $(CLIENT_BIN): $(CLIENT_OBJS) | $(BIN_DIR)
 
 $(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)
 	mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(MODE_FLAGS) -c $< -o $@
 
 $(BIN_DIR) $(BUILD_DIR):
 	mkdir -p $@
