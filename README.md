@@ -6,10 +6,10 @@ make clean
 ```
 **Server (choose mode)**
 ```
-make server MODE=MULTI
-make server MODE=SELECT
-make server MODE=POLL
-make server MODE=EPOLL
+make server MODE=MULTI     // mode server multithread
+make server MODE=SELECT    // mode select
+make server MODE=POLL      // mode poll
+make server MODE=EPOLL      // mode epoll
 ```
 **Client**
 ```
