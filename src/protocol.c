@@ -176,7 +176,7 @@ int build_msg_response(char *buf, size_t size, const char *topic, const char *pu
     return written;
 }
 
-int build_dm_response(char *buf, size_t size, const char *sender, const char *payload) {
+int build_dr_response(char *buf, size_t size, const char *sender, const char *payload) {
     int written;
 
     if (buf == NULL || sender == NULL || payload == NULL) {

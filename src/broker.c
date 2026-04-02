@@ -236,8 +236,7 @@ BrokerStatus broker_send_direct(Broker *broker, Client *client, const char *targ
 
     pthread_mutex_unlock(&broker->lock);
 
-    if (build_dm_response(msgbuf, sizeof(msgbuf),
-                          client->client_id, payload) < 0) {
+    if (build_dr_response(msgbuf, sizeof(msgbuf), client->client_id, payload) < 0) {
         return BR_ERR_INTERNAL;
     }
 

@@ -30,12 +30,7 @@ const char *command_type_to_string(CommandType type);
 
 int build_ok_response(char *buf, size_t size, const char *fmt, ...);
 int build_err_response(char *buf, size_t size, BrokerStatus status);
-int build_msg_response(char *buf, size_t size,
-                       const char *topic,
-                       const char *publisher,
-                       const char *payload);
-int build_dm_response(char *buf, size_t size,
-                      const char *sender,
-                      const char *payload);
+int build_msg_response(char *buf, size_t size, const char *topic, const char *publisher, const char *payload);
+int build_dr_response(char *buf, size_t size, const char *sender, const char *payload);
 
 #endif
