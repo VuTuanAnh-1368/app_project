@@ -16,7 +16,6 @@ ssize_t recv_line(int fd, char *buf, size_t maxlen) {
             if (c == '\r') {
                 continue;
             }
-
             if (c == '\n') {
                 break;
             }

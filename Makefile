@@ -8,11 +8,11 @@ BUILD_DIR   := build
 
 # Source files
 SERVER_SRCS := $(wildcard src/*.c)
-CLIENT_SRCS := $(wildcard client/*.c) src/net.c  //notes ve viet lai
+CLIENT_SRCS := $(wildcard client/*.c) src/net.c
 
 # Object files
-SERVER_OBJS := $(SERVER_SRCS:.c=.o)
-CLIENT_OBJS := $(CLIENT_SRCS:.c=.o)
+SERVER_OBJS := $(patsubst %.c,$(BUILD_DIR)/%.o,$(SERVER_SRCS))
+CLIENT_OBJS := $(patsubst %.c,$(BUILD_DIR)/%.o,$(CLIENT_SRCS))
 
 # Dependency files
 SERVER_DEPS := $(SERVER_OBJS:.o=.d)
@@ -35,17 +35,17 @@ $(SERVER_BIN): $(SERVER_OBJS) | $(BIN_DIR)
 $(CLIENT_BIN): $(CLIENT_OBJS) | $(BIN_DIR)
 	$(CC) $^ $(LDFLAGS) -o $@
 
-%.o: %.c
+$(BUILD_DIR)/%.o: %.c | $(BUILD_DIR)
+	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(BIN_DIR):
-	mkdir -p $(BIN_DIR)
+$(BIN_DIR) $(BUILD_DIR):
+	mkdir -p $@
 
 -include $(SERVER_DEPS) $(CLIENT_DEPS)
 
 clean:
 	rm -f $(SERVER_BIN) $(CLIENT_BIN)
-	rm -f $(SERVER_OBJS) $(CLIENT_OBJS)
-	rm -f $(SERVER_DEPS) $(CLIENT_DEPS)
+	rm -rf $(BUILD_DIR)
 
 .PHONY: all server client clean
