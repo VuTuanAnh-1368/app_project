@@ -30,10 +30,12 @@ ifeq ($(MODE),MULTI)
 MODE_FLAGS = -DMULTI
 else ifeq ($(MODE),EPOLL)
 MODE_FLAGS = -DEPOLL
+else ifeq ($(MODE),SELECT)
+MODE_FLAGS = -DSELECT
 else ifeq ($(MODE),POLL)
 MODE_FLAGS = -DPOLL
 else
-$(error MODE must be MULTI, EPOLL, or POLL)
+$(error MODE must be MULTI,SELECT, EPOLL, or POLL)
 endif
 
 all: server client
