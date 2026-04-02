@@ -19,6 +19,8 @@
 
 #include <signal.h>
 
+#define MAX_CLIENTS 1024
+
 void *client_thread_main(void *arg);
 int create_listen_socket(int port);
 void handle_sigint(int sig);
@@ -97,29 +99,29 @@ int main() {
 #elif defined(SELECT)
     int maxfd;
     int ready;
-    int registered_map[1000];
+    int registered_map[MAX_CLIENTS];
     memset(registered_map, 0, sizeof(registered_map));
 
 
     while(g_running) {
         fd_set readfds;
-        Client *cur_client;
+        Client *p_client;
 
         FD_ZERO(&readfds);
         FD_SET(listen_fd, &readfds);
         maxfd = listen_fd;
 
-        cur_client = broker.clients;
-        while (cur_client != NULL) {
-            if (cur_client->fd >= FD_SETSIZE) {
-                log_error("fd=%d > FD_SETSIZE", cur_client->fd);
+        p_client = broker.clients;
+        while (p_client != NULL) {
+            if (p_client->fd >= FD_SETSIZE) {
+                log_error("fd=%d > FD_SETSIZE", p_client->fd);
             } else {
-                FD_SET(cur_client->fd, &readfds);
-                if (cur_client->fd > maxfd) {
-                    maxfd = cur_client->fd;
+                FD_SET(p_client->fd, &readfds);
+                if (p_client->fd > maxfd) {
+                    maxfd = p_client->fd;
                 }
             }
-            cur_client = cur_client->next;
+            p_client = p_client->next;
         }
 
         ready = select(maxfd + 1, &readfds, NULL, NULL, NULL);
@@ -156,37 +158,37 @@ int main() {
             
         }
 
-        cur_client = broker.clients;
-        while (cur_client != NULL) {
-            Client *next = cur_client->next;
+        p_client = broker.clients;
+        while (p_client != NULL) {
+            Client *next = p_client->next;
 
-            if (cur_client->fd < FD_SETSIZE && FD_ISSET(cur_client->fd, &readfds)) {
+            if (p_client->fd < FD_SETSIZE && FD_ISSET(p_client->fd, &readfds)) {
                 char line[MAX_LINE_LEN];
                 ssize_t rc;
                 int should_quit = 0;
 
-                rc = recv_line(cur_client->fd, line, sizeof(line));
+                rc = recv_line(p_client->fd, line, sizeof(line));
                 if (rc > 0) {
-                    log_info("fd=%d recv: %s", cur_client->fd, line);
-                    should_quit = process_line(&broker, cur_client, line, &registered_map[cur_client->fd]);
+                    log_info("fd=%d recv: %s", p_client->fd, line);
+                    should_quit = process_line(&broker, p_client, line, &registered_map[p_client->fd]);
 
                     if (should_quit) {
-                        registered_map[cur_client->fd] = 0;
-                        broker_remove_client(&broker, cur_client);
+                        registered_map[p_client->fd] = 0;
+                        broker_remove_client(&broker, p_client);
                     }
                 } 
                 else if (rc == 0) {
-                    log_info("client fd=%d disconnected", cur_client->fd);
-                    registered_map[cur_client->fd] = 0;
-                    broker_remove_client(&broker, cur_client);
+                    log_info("client fd=%d disconnected", p_client->fd);
+                    registered_map[p_client->fd] = 0;
+                    broker_remove_client(&broker, p_client);
                 } 
                 else {
-                    log_error("recv_line failed for fd=%d", cur_client->fd);
-                    registered_map[cur_client->fd] = 0;
-                    broker_remove_client(&broker, cur_client);
+                    log_error("recv_line failed for fd=%d", p_client->fd);
+                    registered_map[p_client->fd] = 0;
+                    broker_remove_client(&broker, p_client);
                 }
             }
-            cur_client = next;
+            p_client = next;
         }
 
     }
@@ -195,11 +197,9 @@ int main() {
 
 #elif defined(POLL)
 
-#define MAXFDS 1000
-
-    struct pollfd fds[MAXFDS];
+    struct pollfd fds[MAX_CLIENTS + 1];
     int i, n, nfds;
-    int registered_map[MAXFDS];
+    int registered_map[MAX_CLIENTS + 1];
     memset(registered_map, 0, sizeof(registered_map));
 
     nfds = 1;
@@ -228,6 +228,7 @@ int main() {
                 if (errno != EINTR) {
                     perror("accept");
                 }
+                continue;
             }
 
             printf("Accepted connection from %s:%d (fd=%d)\n", inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port), client_fd);
@@ -236,6 +237,12 @@ int main() {
 
             if (client == NULL) { 
                 perror("client_create");
+                close(client_fd);
+                continue;
+            }
+
+            if (nfds >= MAX_CLIENTS + 1) {
+                log_error("Clients > MAX..");
                 close(client_fd);
                 continue;
             }
@@ -313,7 +320,7 @@ int main() {
     int epfd, n, i, fd;
     struct epoll_event ev, events[MAX_EVENTS];
 
-    int registered_map[1000];
+    int registered_map[MAX_CLIENTS];
     memset(registered_map, 0 , sizeof(registered_map));
 
     epfd = epoll_create1(0);
@@ -400,9 +407,9 @@ int main() {
                     
                     else if (rc == 0) {
                         epoll_ctl(epfd, EPOLL_CTL_DEL, client->fd, NULL);
-                        log_info("client fd=%d disconnected", cur_client->fd);
-                        registered_map[cur_client->fd] = 0;
-                        broker_remove_client(&broker, cur_client);
+                        log_info("client fd=%d disconnected", client->fd);
+                        registered_map[client->fd] = 0;
+                        broker_remove_client(&broker, client);
                     }
 
                     else {
